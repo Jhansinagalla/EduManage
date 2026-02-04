@@ -6,6 +6,7 @@ import { Login } from "./pages/auth/Login";
 import { Sidebar } from "./components/Sidebar";
 import { AdminDashboard } from "./pages/admin/Dashboard";
 import { StudentList } from "./pages/admin/StudentList";
+import { TeacherList } from "./pages/admin/TeacherList";
 import { MyClasses } from "./pages/teacher/MyClasses";
 import { StudentProfile } from "./pages/student/StudentProfile";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -69,6 +70,14 @@ function App() {
             <Authenticated fallback={<Redirect to="/login" />}>
               <Layout>
                 <StudentList />
+              </Layout>
+            </Authenticated>
+          </Route>
+
+          <Route path="/teachers">
+            <Authenticated fallback={<Redirect to="/login" />}>
+              <Layout>
+                <TeacherList />
               </Layout>
             </Authenticated>
           </Route>
