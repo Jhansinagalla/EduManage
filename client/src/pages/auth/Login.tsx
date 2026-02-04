@@ -1,5 +1,6 @@
 import { useLogin } from "@refinedev/core";
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ import { School, User, ShieldCheck, GraduationCap } from "lucide-react";
 export function Login() {
   const { mutate: login, isLoading } = useLogin();
   const [role, setRole] = useState<"student" | "teacher" | "admin">("student");
+  const [, setLocation] = useLocation();
 
   // Pre-filled credentials for convenience
   const credentials = {
@@ -20,7 +22,11 @@ export function Login() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login(credentials[role]);
+    login(credentials[role], {
+      onSuccess: () => {
+        setLocation("/");
+      },
+    });
   };
 
   return (
