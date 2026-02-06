@@ -28,8 +28,26 @@ const ICONS: Record<string, any> = {
 export function Sidebar() {
   const { mutate: logout } = useLogout();
   const { menuItems, selectedKey } = useMenu();
-  const { data: user } = useGetIdentity<{ name: string; role: string; avatar: string }>();
+  const { data: user } = useGetIdentity<{ name: string; role: string; avatar?: string }>();
   const [location] = useLocation();
+
+  const getInitials = (value?: string) => {
+    const safe = value?.trim() || "";
+    if (!safe) return "U";
+    const parts = safe.split(" ");
+    const letters = parts.length >= 2 ? `${parts[0][0]}${parts[1][0]}` : safe.slice(0, 2);
+    return letters.toUpperCase();
+  };
+
+  const getAvatarStyle = (value?: string) => {
+    const text = value || "user";
+    let hash = 0;
+    for (let i = 0; i < text.length; i += 1) {
+      hash = text.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return { backgroundColor: `hsl(${hue}, 55%, 35%)`, color: "hsl(0 0% 98%)" };
+  };
 
   return (
     <aside className="hidden md:flex flex-col w-64 h-screen bg-card border-r border-border sticky top-0">
@@ -46,8 +64,8 @@ export function Sidebar() {
       <div className="px-4 py-2">
         <div className="p-4 rounded-xl bg-accent/50 border border-border/50 flex items-center gap-3 mb-6">
           <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
-            <AvatarImage src={user?.avatar} />
-            <AvatarFallback>{user?.name?.slice(0, 2).toUpperCase()}</AvatarFallback>
+            {user?.avatar ? <AvatarImage src={user.avatar} /> : null}
+            <AvatarFallback style={getAvatarStyle(user?.name)}>{getInitials(user?.name)}</AvatarFallback>
           </Avatar>
           <div className="overflow-hidden">
             <p className="text-sm font-semibold truncate">{user?.name}</p>
